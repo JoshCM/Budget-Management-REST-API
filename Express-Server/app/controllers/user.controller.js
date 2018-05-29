@@ -1,6 +1,7 @@
 
 const User = require('../models/user.model.js');
 
+
 exports.create = (req, res) => {
     if (!req.body.Name) {
         return res.status(400).send({
@@ -11,8 +12,9 @@ exports.create = (req, res) => {
     const user = new User({
         Name: req.body.Name,
         Nachname: req.body.Nachname,
-        Alter: req.body.Alter,
         Email: req.body.Email,
+        Projects: req.body.Projects,
+        SuperUser:req.body.SuperUser
     });
 
     user.save()
@@ -55,7 +57,7 @@ exports.findOne = (req, res) => {
                 message: "Error retrieving user with id" + req.params.userId
             });
         });
-};;
+};
 exports.update = (req, res) => {
     if (!req.body.Name) {
         return res.status(400).send({
@@ -66,8 +68,9 @@ exports.update = (req, res) => {
     User.findByIdAndUpdate(req.params.userId, {
         Name: req.body.Name,
         Nachname: req.body.Nachname,
-        Alter: req.body.Alter,
         Email: req.body.Email,
+        Projects: req.body.Projects,
+        SuperUser:req.body.SuperUser
     }, { new: true })
         .then(user => {
             if (!user) {

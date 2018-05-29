@@ -25,6 +25,7 @@ app.get('/', (req, res) => {
 });
 
 require('./app/routes/user.routes.js')(app);
+require('./app/routes/project.routes.js')(app);
 
 
 app.listen(8080, () => {
