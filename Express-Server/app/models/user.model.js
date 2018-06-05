@@ -5,7 +5,6 @@ const UserSchema = mongoose.Schema({
     Name:String,
     Nachname:String,
     Email:String,
-    Projects:[ObjectId],
     SuperUser:Boolean
 },{
     timestamps:true

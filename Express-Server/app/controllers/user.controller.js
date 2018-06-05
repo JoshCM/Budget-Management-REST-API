@@ -13,7 +13,6 @@ exports.create = (req, res) => {
         Name: req.body.Name,
         Nachname: req.body.Nachname,
         Email: req.body.Email,
-        Projects: req.body.Projects,
         SuperUser:req.body.SuperUser
     });
 
@@ -69,7 +68,6 @@ exports.update = (req, res) => {
         Name: req.body.Name,
         Nachname: req.body.Nachname,
         Email: req.body.Email,
-        Projects: req.body.Projects,
         SuperUser:req.body.SuperUser
     }, { new: true })
         .then(user => {
