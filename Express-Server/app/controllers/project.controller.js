@@ -71,11 +71,14 @@ exports.getValuesByDate = (req, res) => {
           }
 
           project.Expenses.map( ex =>{
-              if(ex.Date >= new Date(req.params.year,req.params.month,1)&& ex.Date <= new Date(req.params.year,req.params.month,31)){
+              
+              console.log(ex.Date.getMonth());
+              console.log(ex.Date.getFullYear());
+              if(ex.Date.getMonth() == req.params.month-1 && ex.Date.getFullYear() == req.params.year){
                 result.push(ex)
               }
           } )
-          send(result)
+          res.send(result)
 
       }).catch(err => {
           if (err.kind === 'ObjectId') {
