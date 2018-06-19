@@ -61,35 +61,47 @@ exports.findOne = (req, res) => {
 };
 
 exports.getValuesByDate = (req, res) => {
-  Project.findById(req.params.projectId)
-      .then(project => {
-          var result = []
-          if (!project) {
-              return res.status(404).send({
-                  message: "Project not found with id " + req.params.projectId
-              });
-          }
+    Project.findById(req.params.projectId)
+        .then(project => {
+            var result = { Expenses: [], Revenue: [], Goals: [] };
+            if (!project) {
+                return res.status(404).send({
+                    message: "Project not found with id " + req.params.projectId
+                });
+            }
 
-          project.Expenses.map( ex =>{
-              
-              console.log(ex.Date.getMonth());
-              console.log(ex.Date.getFullYear());
-              if(ex.Date.getMonth() == req.params.month-1 && ex.Date.getFullYear() == req.params.year){
-                result.push(ex)
-              }
-          } )
-          res.send(result)
+            project.Expenses.map(ex => {
+                if (ex.Date.getMonth() == req.params.month - 1 && ex.Date.getFullYear() == req.params.year) {
+                    result.Expenses.push(ex)
+                }
+            });
 
-      }).catch(err => {
-          if (err.kind === 'ObjectId') {
-              return res.status(404).send({
-                  message: "Project not found with id " + req.params.projectId
-              });
-          }
-          return res.status(500).send({
-              message: "Error retrieving project with id " + rep.params.projectId
-          });
-      });
+            project.Goals.map(ex => {
+                if (ex.Date.getMonth() == req.params.month - 1 && ex.Date.getFullYear() == req.params.year) {
+                    result.Goals.push(ex)
+                }
+            });
+
+            project.Revenue.map(ex => {
+                if (ex.Date.getMonth() == req.params.month - 1 && ex.Date.getFullYear() == req.params.year) {
+                    result.Revenue.push(ex)
+                }
+            });
+
+            
+
+            res.send(result)
+
+        }).catch(err => {
+            if (err.kind === 'ObjectId') {
+                return res.status(404).send({
+                    message: "Project not found with id " + req.params.projectId
+                });
+            }
+            return res.status(500).send({
+                message: "Error retrieving project with id " + rep.params.projectId
+            });
+        });
 
 }
 
