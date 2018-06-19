@@ -60,6 +60,29 @@ exports.findOne = (req, res) => {
         });
 };
 
+exports.getValuesByDate = (req, res) => {
+  Project.findById(req.params.projectId)
+      .then(project => {
+          if (!project) {
+              return res.status(404).send({
+                  message: "Project not found with id " + req.params.projectId
+              });
+          }
+          res.send(project.Expenses);
+
+      }).catch(err => {
+          if (err.kind === 'ObjectId') {
+              return res.status(404).send({
+                  message: "Project not found with id " + req.params.projectId
+              });
+          }
+          return res.status(500).send({
+              message: "Error retrieving project with id " + rep.params.projectId
+          });
+      });
+
+}
+
 exports.update = (req, res) => {
     if (!req.body.Title) {
         return res.status(400).send({
@@ -113,4 +136,3 @@ exports.delete = (req, res) => {
             });
         });
 };
-

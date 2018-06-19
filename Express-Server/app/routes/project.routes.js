@@ -7,6 +7,8 @@ module.exports = (app) => {
 
     app.get('/projects/:projectId',projects.findOne);
 
+    app.get('/projects/:projectId/:month/:year',projects.getValuesByDate);
+
     app.put('/projects/:projectId',projects.update);
 
     app.delete('/projects/:projectId',projects.delete);
