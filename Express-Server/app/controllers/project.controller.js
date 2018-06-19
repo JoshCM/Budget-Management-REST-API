@@ -63,12 +63,19 @@ exports.findOne = (req, res) => {
 exports.getValuesByDate = (req, res) => {
   Project.findById(req.params.projectId)
       .then(project => {
+          var result = []
           if (!project) {
               return res.status(404).send({
                   message: "Project not found with id " + req.params.projectId
               });
           }
-          res.send(project.Expenses);
+
+          project.Expenses.map( ex =>{
+              if(ex.Date >= new Date(req.params.year,req.params.month,1)&& ex.Date <= new Date(req.params.year,req.params.month,31)){
+                result.push(ex)
+              }
+          } )
+          send(result)
 
       }).catch(err => {
           if (err.kind === 'ObjectId') {
