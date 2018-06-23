@@ -61,8 +61,10 @@ exports.findOne = (req, res) => {
 };
 
 exports.getValuesByDate = (req, res) => {
-    Project.find({"Expenses.Date" : {$gte: new Date(req.params.year, req.params.month)}}).then( Exp => {
-      console.log(Exp);
+    Project.find({"Expenses.Date" : {$gte: new Date(req.params.year, req.params.month)},_id:req.params.projectId}, "Expenses").then( Exp => {
+      Exp.map(entry => {
+          console.log(entry)
+      });
     }
     );
 

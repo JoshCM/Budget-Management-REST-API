@@ -1,5 +1,5 @@
 module.exports = (app) => {
-    const projects = require('../controllers/project.controller.js');
+    const projects = require('../controllers/account.controller.js');
 
     app.post('/projects',projects.create);
 
