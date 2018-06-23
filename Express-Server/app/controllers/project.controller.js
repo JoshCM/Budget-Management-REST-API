@@ -61,7 +61,13 @@ exports.findOne = (req, res) => {
 };
 
 exports.getValuesByDate = (req, res) => {
+    Project.find({"Expenses.Date" : {$gte: new Date(req.params.year, req.params.month)}}).then( Exp => {
+      console.log(Exp);
+    }
+    );
+
     Project.findById(req.params.projectId)
+    // select * From Expenses where Expenses.Date < req.para.Enddate and Expenses.Date > req.para.Startdate
         .then(project => {
             var result = { Expenses: [], Revenue: [], Goals: [] };
             if (!project) {
@@ -88,7 +94,7 @@ exports.getValuesByDate = (req, res) => {
                 }
             });
 
-            
+
 
             res.send(result)
 

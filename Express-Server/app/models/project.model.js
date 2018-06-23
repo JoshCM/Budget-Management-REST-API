@@ -11,4 +11,10 @@ const ProjectSchema = mongoose.Schema({
     timestamps:true
 });
 
+const CalendarSchema = mongoose.Schema({
+        User:[
+
+        ]
+})
+
 module.exports = mongoose.model('Project',ProjectSchema);
