@@ -110,14 +110,13 @@ exports.getExpensesByDate = (req,res)=>{
 
 exports.getIncomesByDate = (req,res)=>{
     Account.find({Email:req.params.userEmail},
-        {_id:0, "Expenses":1})
+        {_id:0, "Income":1})
     .then(data => {
         Income = data[0].Income;
         response = []
         queryStartDate = new Date(req.params.year,req.params.month,0)
 
-        Expenses.map(entr=>{
-            console.log(entr)
+        Income.map(entr=>{
             if(entr.Date != null
                 && queryStartDate.getFullYear() == entr.Date.getFullYear()  
                 && queryStartDate.getMonth() == entr.Date.getMonth()){
