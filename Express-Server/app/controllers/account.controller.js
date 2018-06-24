@@ -34,20 +34,46 @@ exports.findAll = (req,res) => {
 };
 
 exports.getExpensesDates = (req,res) => {
-    Account.find({Email:req.params.userEmail}, "Expenses.Date")
-    .then(expenses => {
-        res.send(expenses);
+    Account.find({Email:req.params.userEmail}, {_id:0, "Expenses.Date":1})
+    .then(Expenses => {
+
+        Dates = {}
+        DateList = Expenses[0];
+        DateList.Expenses.map(exp => {
+            month = exp.Date.getMonth();
+            year = exp.Date.getFullYear();
+            if(!Dates[year]){
+                Dates[year] = [month];
+            }else if (!Dates[year].includes(month)){
+                Dates[years].push(month);
+            }
+        });
+        res.send(Dates);
+
     }).catch(error => {
         res.status(404).send({
-            message: error.message || "Expenses not found."
+            message: error.message || "Incomes not found."
         });
     });
 };
 
 exports.getIncomeDates = (req,res) => {
-    Account.find({Email:req.params.userEmail}, "Income.Date")
-    .then(expenses => {
-        res.send(expenses);
+    Account.find({Email:req.params.userEmail}, {_id:0, "Income.Date":1})
+    .then(Incomes => {
+
+        Dates = {}
+        DateList = Incomes[0];
+        DateList.Income.map(inc => {
+            month = inc.Date.getMonth();
+            year = inc.Date.getFullYear();
+            if(!Dates[year]){
+                Dates[year] = [month];
+            }else if (!Dates[year].includes(month)){
+                Dates[years].push(month);
+            }
+        });
+        res.send(Dates);
+
     }).catch(error => {
         res.status(404).send({
             message: error.message || "Incomes not found."
@@ -56,16 +82,25 @@ exports.getIncomeDates = (req,res) => {
 };
 
 exports.getExpensesByDate = (req,res)=>{
-    Account.find({Email:req.params.userEmail, Expenses:{$elemMatch:{
-        Date: {
-            $gte: new Date(req.params.year,req.params.month-1,1),
-            $lte: new Date(req.params.year,req.params.month-1,31)
-            }
-        }
-    }
-    },{_id:0, "Expenses.$":1})
+    Account.find({Email:req.params.userEmail},
+        {_id:0, "Expenses":1})
     .then(data => {
-        res.send(data[0]);
+        Expenses = data[0].Expenses;
+        response = []
+        queryStartDate = new Date(req.params.year,req.params.month,0)
+
+        Expenses.map(entr=>{
+            console.log(entr)
+            if(entr.Date != null
+                && queryStartDate.getFullYear() == entr.Date.getFullYear()  
+                && queryStartDate.getMonth() == entr.Date.getMonth()){
+                response.push(entr)
+            }
+        
+        })
+
+        
+        res.send(response);
     }).catch(err => {
         res.status(404).send({
             message: err.message || "Cant find matching Expenses"
@@ -74,19 +109,28 @@ exports.getExpensesByDate = (req,res)=>{
 };
 
 exports.getIncomesByDate = (req,res)=>{
-    Account.find({Email:req.params.userEmail, Income:{$elemMatch:{
-        Date: {
-            $gte: new Date(req.params.year,req.params.month-1,1),
-            $lte: new Date(req.params.year,req.params.month-1,31)
-            }
-        }
-    }
-    },{_id:0, "Income.$":1})
+    Account.find({Email:req.params.userEmail},
+        {_id:0, "Expenses":1})
     .then(data => {
-        res.send(data[0]);
+        Income = data[0].Income;
+        response = []
+        queryStartDate = new Date(req.params.year,req.params.month,0)
+
+        Expenses.map(entr=>{
+            console.log(entr)
+            if(entr.Date != null
+                && queryStartDate.getFullYear() == entr.Date.getFullYear()  
+                && queryStartDate.getMonth() == entr.Date.getMonth()){
+                response.push(entr)
+            }
+        
+        })
+
+        
+        res.send(response);
     }).catch(err => {
         res.status(404).send({
-            message: err.message || "Cant find matching Expenses"
+            message: err.message || "Cant find matching Income"
         })
     })
 };

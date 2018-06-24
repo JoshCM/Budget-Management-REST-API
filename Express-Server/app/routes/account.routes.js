@@ -1,9 +1,9 @@
 module.exports = (app) => {
     const account = require('../controllers/account.controller.js');
+    
     //POST
     app.post('/accounts',account.create);
 
-    
     //GET
     app.get('/accounts',account.findAll);
 
@@ -20,12 +20,10 @@ module.exports = (app) => {
 
     app.put('/expenses/:userEmail',account.addExpens);
 
-/*
     //DELETE
-    app.delete('/expenses/:userEmail/:expenseId',account.removeExpense);
+    //app.delete('/expenses/:userEmail/:expenseId',account.removeExpense);
 
-    app.delete('/expenses/:userEmail/:expenseId',account.removeIncome);
+    //app.delete('/expenses/:userEmail/:expenseId',account.removeIncome);
 
-    app.delete('/accounts/:userEmail',account.deleteAccount);
-    */
+    //app.delete('/accounts/:userEmail',account.deleteAccount);
 }
