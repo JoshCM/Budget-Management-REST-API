@@ -90,7 +90,6 @@ exports.getExpensesByDate = (req,res)=>{
         queryStartDate = new Date(req.params.year,req.params.month,0)
 
         Expenses.map(entr=>{
-            console.log(entr)
             if(entr.Date != null
                 && queryStartDate.getFullYear() == entr.Date.getFullYear()  
                 && queryStartDate.getMonth() == entr.Date.getMonth()){
