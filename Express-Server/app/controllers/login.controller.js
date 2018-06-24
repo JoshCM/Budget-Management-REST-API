@@ -1,4 +1,4 @@
-const Users = require('../models/user.model.js');
+const Account = require('../models/account.model.js');
 
 exports.login = (req, res) => {
     if (!req.body.Email) {
@@ -7,10 +7,9 @@ exports.login = (req, res) => {
         });
     }
 
-    Users.findOne({ Email: req.body.Email }, function (err, docs) {
-        user = docs;
-        if(user){
-            if (user.Nachname == req.body.Pass) {
+    Account.findOne({ Email: req.body.Email }, function (err, account) {
+        if(account){
+            if (account.Password == req.body.Password) {
                 return res.send({
                     login: true
                 });
@@ -21,7 +20,7 @@ exports.login = (req, res) => {
             }
         }else{
             return res.status(404).send({
-                message:"User not found"
+                message:err.message
             });
         }
     });

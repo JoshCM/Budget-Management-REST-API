@@ -32,7 +32,7 @@ app.get('/', (req, res) => {
 
 //require('./app/routes/user.routes.js')(app);
 //require('./app/routes/project.routes.js')(app);
-//require('./app/routes/authentication.routes.js')(app);
+require('./app/routes/authentication.routes.js')(app);
 require('./app/routes/account.routes.js')(app);
 
 
