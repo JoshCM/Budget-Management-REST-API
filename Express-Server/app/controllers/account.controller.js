@@ -99,7 +99,9 @@ exports.getExpensesByDate = (req,res)=>{
         })
 
         
-        res.send(response);
+        res.send(response.sort((a,b)=>{
+            return a.Date >= b.Date
+        }));
     }).catch(err => {
         res.status(404).send({
             message: err.message || "Cant find matching Expenses"
@@ -125,7 +127,9 @@ exports.getIncomesByDate = (req,res)=>{
         })
 
         
-        res.send(response);
+        res.send(response.sort((a,b)=>{
+            return a.Date >= b.Date
+        }));
     }).catch(err => {
         res.status(404).send({
             message: err.message || "Cant find matching Income"
