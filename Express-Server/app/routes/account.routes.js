@@ -8,13 +8,12 @@ module.exports = (app) => {
     app.get('/accounts',account.findAll);
 
     app.get('/expenseDates/:userEmail',account.getExpensesDates);
+
     app.get('/incomeDates/:userEmail',account.getIncomeDates);
-    /*
     
     app.get('/expenses/:userEmail/:month/:year',account.getExpensesByDate);
 
     app.get('/incomes/:userEmail/:month/:year',account.getIncomesByDate);
-*/
 
     //PUT
     app.put('/incomes/:userEmail',account.addIncome);

@@ -1,6 +1,8 @@
 
 const Account = require('../models/account.model.js');
 
+
+//POST
 exports.create = (req, res) => {
     const account = new Account({
         Name:req.body.Name,
@@ -19,6 +21,7 @@ exports.create = (req, res) => {
     });
 };
 
+//GET
 exports.findAll = (req,res) => {
     Account.find()
     .then(account => {
@@ -52,6 +55,44 @@ exports.getIncomeDates = (req,res) => {
     });
 };
 
+exports.getExpensesByDate = (req,res)=>{
+    Account.find({Email:req.params.userEmail, Expenses:{$elemMatch:{
+        Date: {
+            $gte: new Date(req.params.year,req.params.month-1,1),
+            $lte: new Date(req.params.year,req.params.month-1,31)
+            }
+        }
+    }
+    },{_id:0, "Expenses.$":1})
+    .then(data => {
+        res.send(data[0]);
+    }).catch(err => {
+        res.status(404).send({
+            message: err.message || "Cant find matching Expenses"
+        })
+    })
+};
+
+exports.getIncomesByDate = (req,res)=>{
+    Account.find({Email:req.params.userEmail, Income:{$elemMatch:{
+        Date: {
+            $gte: new Date(req.params.year,req.params.month-1,1),
+            $lte: new Date(req.params.year,req.params.month-1,31)
+            }
+        }
+    }
+    },{_id:0, "Income.$":1})
+    .then(data => {
+        res.send(data[0]);
+    }).catch(err => {
+        res.status(404).send({
+            message: err.message || "Cant find matching Expenses"
+        })
+    })
+};
+
+
+//PUT
 exports.addIncome = (req,res) => {
     Account.findOne({Email:req.params.userEmail})
     .then(data => {
@@ -66,6 +107,8 @@ exports.addIncome = (req,res) => {
     });
 };
 
+
+
 exports.addExpens = (req,res) => {
     Account.findOne({Email:req.params.userEmail})
     .then(data => {
@@ -79,3 +122,7 @@ exports.addExpens = (req,res) => {
         });
     });
 };
+
+
+
+
