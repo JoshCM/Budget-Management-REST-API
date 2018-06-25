@@ -81,6 +81,47 @@ exports.getIncomeDates = (req,res) => {
     });
 };
 
+exports.getTotalsByDate = (req,res) => {
+  Account.find({Email:req.params.userEmail},
+      {_id:0, "Expenses":1, "Income": 1})
+  .then(data => {
+      Expenses = data[0].Expenses;
+      Income = data[0].Income;
+      ExSum = 0;
+      InSum = 0;
+      Entries = []
+      queryStartDate = new Date(req.params.year,req.params.month,0)
+
+      Income.map(entr=>{
+          if(entr.Date != null
+              && queryStartDate.getFullYear() == entr.Date.getFullYear()
+              && queryStartDate.getMonth() == entr.Date.getMonth()){
+              Entries.push(entr.Amount)
+          }
+
+      })
+      InSum = Entries.reduce((pv, cv) => pv+cv, 0);
+      Entries =[]
+      Expenses.map(entr=>{
+          if(entr.Date != null
+              && queryStartDate.getFullYear() == entr.Date.getFullYear()
+              && queryStartDate.getMonth() == entr.Date.getMonth()){
+              Entries.push(entr.Amount)
+          }
+
+      })
+      ExSum = Entries.reduce((pv, cv) => pv+cv, 0);
+
+      response = {Expense: ExSum, Income: InSum};
+
+      res.send(response);
+  }).catch(err => {
+      res.status(404).send({
+          message: err.message || "Cant find matching Expenses"
+      })
+  })
+};
+
 exports.getExpensesByDate = (req,res)=>{
     Account.find({Email:req.params.userEmail},
         {_id:0, "Expenses":1})
@@ -133,7 +174,61 @@ exports.getIncomesByDate = (req,res)=>{
         })
     })
 };
+exports.getSingleMaxExpense = (req,res) => {
+    Account.find({Email:req.params.userEmail},
+        {_id:0, "Expenses":1})
+    .then(data => {
+        Expense = data[0].Expenses;
+        response = []
+        queryStartDate = new Date(req.params.year,req.params.month,0)
+        Entry = {Title: "" , Amount: 0}
+        Expense.map(entr=>{
+            if(entr.Date != null
+                && queryStartDate.getFullYear() == entr.Date.getFullYear()
+                && queryStartDate.getMonth() == entr.Date.getMonth()){
+                if(Entry.Amount < entr.Amount){
+                  Entry = {Title: entr.Title, Date: entr.Date, Amount: entr.Amount}
+                }
+            }
 
+        })
+
+
+        res.send(Entry);
+    }).catch(err => {
+        res.status(404).send({
+            message: err.message || "Cant find matching Income"
+        })
+    })
+};
+
+exports.getSingleMaxIncome = (req,res) => {
+    Account.find({Email:req.params.userEmail},
+        {_id:0, "Income":1})
+    .then(data => {
+        Income = data[0].Income;
+        response = []
+        queryStartDate = new Date(req.params.year,req.params.month,0)
+        Entry = {Title: "" , Amount: 0}
+        Income.map(entr=>{
+            if(entr.Date != null
+                && queryStartDate.getFullYear() == entr.Date.getFullYear()
+                && queryStartDate.getMonth() == entr.Date.getMonth()){
+                if(Entry.Amount < entr.Amount){
+                  Entry = {Title: entr.Title, Date: entr.Date, Amount: entr.Amount}
+                }
+            }
+
+        })
+
+
+        res.send(Entry);
+    }).catch(err => {
+        res.status(404).send({
+            message: err.message || "Cant find matching Income"
+        })
+    })
+};
 
 //PUT
 exports.addIncome = (req,res) => {

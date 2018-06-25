@@ -6,9 +6,15 @@ module.exports = (app) => {
     //GET
     app.get('/accounts',account.findAll);
 
+    app.get('/totals/:userEmail/:month/:year',account.getTotalsByDate )
+
     app.get('/expenseDates/:userEmail',account.getExpensesDates);
 
     app.get('/incomeDates/:userEmail',account.getIncomeDates);
+
+    app.get('/singleMaxIncome/:userEmail/:month/:year',account.getSingleMaxIncome);
+
+    app.get('/singleMaxExpense/:userEmail/:month/:year',account.getSingleMaxExpense);
 
     app.get('/expenses/:userEmail/:month/:year',account.getExpensesByDate);
 
