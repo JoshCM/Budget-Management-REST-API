@@ -90,6 +90,7 @@ exports.getExpensesByDate = (req,res)=>{
         queryStartDate = new Date(req.params.year,req.params.month,0)
 
         Expenses.map(entr=>{
+            console.log(entr)
             if(entr.Date != null
                 && queryStartDate.getFullYear() == entr.Date.getFullYear()
                 && queryStartDate.getMonth() == entr.Date.getMonth()){
@@ -98,15 +99,8 @@ exports.getExpensesByDate = (req,res)=>{
 
         })
 
-<<<<<<< HEAD
 
         res.send(response);
-=======
-        
-        res.send(response.sort((a,b)=>{
-            return a.Date >= b.Date
-        }));
->>>>>>> dbRequests
     }).catch(err => {
         res.status(404).send({
             message: err.message || "Cant find matching Expenses"
@@ -131,15 +125,8 @@ exports.getIncomesByDate = (req,res)=>{
 
         })
 
-<<<<<<< HEAD
 
         res.send(response);
-=======
-        
-        res.send(response.sort((a,b)=>{
-            return a.Date >= b.Date
-        }));
->>>>>>> dbRequests
     }).catch(err => {
         res.status(404).send({
             message: err.message || "Cant find matching Income"
