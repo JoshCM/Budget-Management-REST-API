@@ -45,7 +45,7 @@ exports.getExpensesDates = (req,res) => {
             if(!Dates[year]){
                 Dates[year] = [month];
             }else if (!Dates[year].includes(month)){
-                Dates[years].push(month);
+                Dates[year].push(month);
             }
         });
         res.send(Dates);
@@ -69,7 +69,7 @@ exports.getIncomeDates = (req,res) => {
             if(!Dates[year]){
                 Dates[year] = [month];
             }else if (!Dates[year].includes(month)){
-                Dates[years].push(month);
+                Dates[year].push(month);
             }
         });
         res.send(Dates);
@@ -92,14 +92,14 @@ exports.getExpensesByDate = (req,res)=>{
         Expenses.map(entr=>{
             console.log(entr)
             if(entr.Date != null
-                && queryStartDate.getFullYear() == entr.Date.getFullYear()  
+                && queryStartDate.getFullYear() == entr.Date.getFullYear()
                 && queryStartDate.getMonth() == entr.Date.getMonth()){
                 response.push(entr)
             }
-        
+
         })
 
-        
+
         res.send(response);
     }).catch(err => {
         res.status(404).send({
@@ -118,14 +118,14 @@ exports.getIncomesByDate = (req,res)=>{
 
         Income.map(entr=>{
             if(entr.Date != null
-                && queryStartDate.getFullYear() == entr.Date.getFullYear()  
+                && queryStartDate.getFullYear() == entr.Date.getFullYear()
                 && queryStartDate.getMonth() == entr.Date.getMonth()){
                 response.push(entr)
             }
-        
+
         })
 
-        
+
         res.send(response);
     }).catch(err => {
         res.status(404).send({
@@ -165,7 +165,3 @@ exports.addExpens = (req,res) => {
         });
     });
 };
-
-
-
-

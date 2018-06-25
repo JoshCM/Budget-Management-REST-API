@@ -1,16 +1,15 @@
 module.exports = (app) => {
     const account = require('../controllers/account.controller.js');
-    
+
     //POST
     app.post('/accounts',account.create);
-
     //GET
     app.get('/accounts',account.findAll);
 
     app.get('/expenseDates/:userEmail',account.getExpensesDates);
 
     app.get('/incomeDates/:userEmail',account.getIncomeDates);
-    
+
     app.get('/expenses/:userEmail/:month/:year',account.getExpensesByDate);
 
     app.get('/incomes/:userEmail/:month/:year',account.getIncomesByDate);
