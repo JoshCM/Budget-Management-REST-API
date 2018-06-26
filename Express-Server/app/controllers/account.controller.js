@@ -140,9 +140,11 @@ exports.getIncomeDates = (req,res) => {
 };
 
 exports.getTotalsByDate = (req,res) => {
-  Account.find({Email:req.params.userEmail},
+  var token = getToken(req.headers);
+  if (token) {
+    Account.find({Email:req.params.userEmail},
       {_id:0, "Expenses":1, "Income": 1})
-  .then(data => {
+      .then(data => {
       Expenses = data[0].Expenses;
       Income = data[0].Income;
       ExSum = 0;
@@ -173,11 +175,14 @@ exports.getTotalsByDate = (req,res) => {
       response = {Expense: ExSum, Income: InSum};
 
       res.send(response);
-  }).catch(err => {
+    }).catch(err => {
       res.status(404).send({
           message: err.message || "Cant find matching Expenses"
       })
-  })
+    })
+  } else {
+    return res.status(403).send({success: false, msg: 'Unauthorized.'});
+  }
 };
 
 exports.getExpensesByDate = (req,res)=>{
@@ -243,6 +248,8 @@ exports.getIncomesByDate = (req,res)=>{
   }
 };
 exports.getSingleMaxExpense = (req,res) => {
+  var token = getToken(req.headers);
+  if (token) {
     Account.find({Email:req.params.userEmail},
         {_id:0, "Expenses":1})
     .then(data => {
@@ -268,9 +275,14 @@ exports.getSingleMaxExpense = (req,res) => {
             message: err.message || "Cant find matching Income"
         })
     })
+  } else {
+    return res.status(403).send({success: false, msg: 'Unauthorized.'});
+  }
 };
 
 exports.getSingleMaxIncome = (req,res) => {
+  var token = getToken(req.headers);
+  if (token) {
     Account.find({Email:req.params.userEmail},
         {_id:0, "Income":1})
     .then(data => {
@@ -296,6 +308,9 @@ exports.getSingleMaxIncome = (req,res) => {
             message: err.message || "Cant find matching Income"
         })
     })
+  } else {
+    return res.status(403).send({success: false, msg: 'Unauthorized.'});
+  }
 };
 
 //PUT

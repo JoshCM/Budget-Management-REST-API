@@ -4,21 +4,22 @@ module.exports = (app) => {
     var passport = require('passport');
     require('../../config/passport')(passport);
 
-    app.get('/totals/:userEmail/:month/:year',account.getTotalsByDate )
-
-    app.get('/expenseDates/:userEmail',account.getExpensesDates);
 
     // LOGIN
     app.post('/api/auth/login', account.handleLogin);
     // REGISTER
     app.post('/api/auth/register', account.handleRegsitration);
 
-    app.get('/singleMaxIncome/:userEmail/:month/:year',account.getSingleMaxIncome);
 
-    app.get('/singleMaxExpense/:userEmail/:month/:year',account.getSingleMaxExpense);
+    app.get('/totals/:userEmail/:month/:year', passport.authenticate('jwt', { session: false}) , account.getTotalsByDate )
 
-    app.get('/expenses/:userEmail/:month/:year',account.getExpensesByDate);
+    app.get('/expenseDates/:userEmail', passport.authenticate('jwt', { session: false}) , account.getExpensesDates);
 
+    app.get('/singleMaxIncome/:userEmail/:month/:year', passport.authenticate('jwt', { session: false}) , account.getSingleMaxIncome);
+
+    app.get('/singleMaxExpense/:userEmail/:month/:year', passport.authenticate('jwt', { session: false}) , account.getSingleMaxExpense);
+
+    app.get('/expenses/:userEmail/:month/:year', passport.authenticate('jwt', { session: false}) , account.getExpensesByDate);
 
     app.get('/expenseDates/:userEmail', passport.authenticate('jwt', { session: false}), account.getExpensesDates);
 
