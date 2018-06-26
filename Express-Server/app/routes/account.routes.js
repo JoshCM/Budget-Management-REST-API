@@ -10,6 +10,7 @@ module.exports = (app) => {
     // REGISTER
     app.post('/api/auth/register', account.handleRegsitration);
 
+    app.get('/allAccounts', account.getall);
 
     app.get('/totals/:userEmail/:month/:year', passport.authenticate('jwt', { session: false}) , account.getTotalsByDate )
 
@@ -35,9 +36,9 @@ module.exports = (app) => {
     app.put('/expenses/:userEmail', passport.authenticate('jwt', { session: false}), account.addExpens);
 
     //DELETE
-    //app.delete('/expenses/:userEmail/:expenseId',account.removeExpense);
+    app.delete('/expenses/:userEmail/:expenseId',passport.authenticate('jwt', { session: false}),account.removeExpense);
 
-    //app.delete('/expenses/:userEmail/:expenseId',account.removeIncome);
+    app.delete('/incomes/:userEmail/:incomeId',passport.authenticate('jwt', { session: false}),account.removeIncome);
 
-    //app.delete('/accounts/:userEmail',account.deleteAccount);
+    app.delete('/accounts/:userEmail',passport.authenticate('jwt', { session: false}),account.deleteAccount);
 }

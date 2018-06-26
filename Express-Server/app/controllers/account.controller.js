@@ -189,7 +189,7 @@ exports.getExpensesByDate = (req,res)=>{
   var token = getToken(req.headers);
   if (token) {
     Account.find({Email:req.params.userEmail},
-        {_id:0, "Expenses":1})
+        {_id:1, "Expenses":1})
     .then(data => {
         Expenses = data[0].Expenses;
         response = []
@@ -221,7 +221,7 @@ exports.getIncomesByDate = (req,res)=>{
   var token = getToken(req.headers);
   if (token) {
     Account.find({Email:req.params.userEmail},
-        {_id:0, "Income":1})
+        {_id:1, "Income":1})
     .then(data => {
         Income = data[0].Income;
         response = []
@@ -353,3 +353,73 @@ exports.addExpens = (req,res) => {
     return res.status(403).send({success: false, msg: 'Unauthorized.'});
   }
 };
+
+exports.removeExpense = (req,res) => {
+  var token = getToken(req.headers);
+  if (token) {
+
+    Account.update({Email:req.params.userEmail},{$pull:{Expenses:{_id:req.params.expenseId}}})
+    .then(data => {
+        res.send({
+          message: "Deleted successfully"
+        })
+    })
+    .catch(err=> {
+        res.status(404).send({
+            message: err.message || "Account not found"
+        });
+    });
+  } else {
+    return res.status(403).send({success: false, msg: 'Unauthorized.'});
+  }
+
+
+}
+
+exports.removeIncome = (req,res) => {
+  var token = getToken(req.headers);
+  if (token) {
+    Account.update({Email:req.params.userEmail},{$pull:{Income:{_id:req.params.incomeId}}})
+    .then(data => {
+        res.send({
+          message: "Deleted successfully"
+        })
+    })
+    .catch(err=> {
+        res.status(404).send({
+            message: err.message || "Account not found"
+        });
+    });
+  } else {
+    return res.status(403).send({success: false, msg: 'Unauthorized.'});
+  }
+
+
+}
+
+exports.deleteAccount = (req,res) => {
+//  var token = getToken(req.headers);
+//  if (token) {
+    Account.findOneAndRemove({Email:req.params.userEmail})
+    .then(data => {
+        res.send({
+          message: "Deleted successfully"
+        })
+    })
+    .catch(err=> {
+        res.status(404).send({
+            message: err.message || "Account not found"
+        });
+    });
+//  } else {
+//    return res.status(403).send({success: false, msg: 'Unauthorized.'});
+//  }
+
+}
+
+exports.getall = (req,res) => {
+  Account.find()
+  .then(data => {
+    res.send(data);
+  })
+}
