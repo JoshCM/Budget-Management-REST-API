@@ -1,11 +1,14 @@
 const express = require('express');
 const bodyParser = require('body-parser')
+//var auth = require('./app/routes/auth');
 
 const app = express();
 
 app.use(bodyParser.urlencoded({ extended: true }));
 
 app.use(bodyParser.json());
+
+//app.use('/api/auth', auth);
 
 app.use(function(req, res, next) {
   res.header("Access-Control-Allow-Origin", "*");
