@@ -1,16 +1,17 @@
 module.exports = (app) => {
     const account = require('../controllers/account.controller.js');
 
-    //POST
-    app.post('/accounts',account.create);
-    //GET
-    app.get('/accounts',account.findAll);
+    var passport = require('passport');
+    require('../../config/passport')(passport);
 
     app.get('/totals/:userEmail/:month/:year',account.getTotalsByDate )
 
     app.get('/expenseDates/:userEmail',account.getExpensesDates);
 
-    app.get('/incomeDates/:userEmail',account.getIncomeDates);
+    // LOGIN
+    app.post('/api/auth/login', account.handleLogin);
+    // REGISTER
+    app.post('/api/auth/register', account.handleRegsitration);
 
     app.get('/singleMaxIncome/:userEmail/:month/:year',account.getSingleMaxIncome);
 
@@ -18,12 +19,19 @@ module.exports = (app) => {
 
     app.get('/expenses/:userEmail/:month/:year',account.getExpensesByDate);
 
-    app.get('/incomes/:userEmail/:month/:year',account.getIncomesByDate);
+
+    app.get('/expenseDates/:userEmail', passport.authenticate('jwt', { session: false}), account.getExpensesDates);
+
+    app.get('/incomeDates/:userEmail', passport.authenticate('jwt', { session: false}), account.getIncomeDates);
+
+    app.get('/expenses/:userEmail/:month/:year', passport.authenticate('jwt', { session: false}), account.getExpensesByDate);
+
+    app.get('/incomes/:userEmail/:month/:year', passport.authenticate('jwt', { session: false}), account.getIncomesByDate);
 
     //PUT
-    app.put('/incomes/:userEmail',account.addIncome);
+    app.put('/incomes/:userEmail', passport.authenticate('jwt', { session: false}) , account.addIncome);
 
-    app.put('/expenses/:userEmail',account.addExpens);
+    app.put('/expenses/:userEmail', passport.authenticate('jwt', { session: false}), account.addExpens);
 
     //DELETE
     //app.delete('/expenses/:userEmail/:expenseId',account.removeExpense);

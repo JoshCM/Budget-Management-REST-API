@@ -1,28 +1,73 @@
 
 const Account = require('../models/account.model.js');
 
+var passport = require('passport');
+var settings = require('../../config/settings');
+require('../../config/passport')(passport);
+var jwt = require('jsonwebtoken');
 
-//POST
-exports.create = (req, res) => {
-    const account = new Account({
-        Name:req.body.Name,
-        Email:req.body.Email,
-        Password:req.body.Password,
-        SuperUser:req.body.SuperUser
-    });
+// Function to get and extract JWT token.
+getToken = function (headers) {
+  if (headers && headers.authorization) {
+    var parted = headers.authorization.split(' ');
+    if (parted.length === 2) {
+      return parted[1];
+    } else {
+      return null;
+    }
+  } else {
+    return null;
+  }
+};
 
-    account.save()
-    .then(data => {
-        res.send(data);
-    }).catch(err => {
-        res.status(500).send({
-            message: err.message || "Something went wrong while creating the Account"
-        });
+exports.handleLogin = (req, res) => {
+  Account.findOne({
+    Email: req.body.emailInput
+  }, function(err, user) {
+    if (err) throw err;
+
+    if (!user) {
+      res.status(401).send({success: false, msg: 'Authentication failed. Username and Password not found.'});
+    } else {
+      // check if password matches
+      user.comparePassword(req.body.passwordInput, function (err, isMatch) {
+        if (isMatch && !err) {
+          // if user is found and password is right create a token
+          var token = jwt.sign(user.toJSON(), settings.secret, { expiresIn: '30m' });
+          // return the information including token as JSON
+          res.status(200).json({success: true, token: "JWT " + token, email: req.body.emailInput});
+        } else {
+          res.status(401).send({success: false, msg: 'Authentication failed. Username and Password not found.'});
+        }
+      });
+    }
+  });
+};
+
+exports.handleRegsitration = (req, res) => {
+  if (!req.body.emailInput || !req.body.passwordInput) {
+    res.status(500).json({success: false, msg: 'Password and Username can not be blank.'});
+  } else {
+    var newUser = new Account({
+      Name:req.body.Name,
+      Email: req.body.emailInput,
+      Password: req.body.passwordInput,
+      SuperUser: false
     });
+    // save the user
+    newUser.save(function(err) {
+      if (err) {
+        return res.status(500).json({success: false, msg: 'Email is already taken.'});
+      }
+      res.json({success: true, msg: 'Successfully created new user.'});
+    });
+  }
 };
 
 //GET
 exports.findAll = (req,res) => {
+  var token = getToken(req.headers);
+  if (token) {
     Account.find()
     .then(account => {
         res.send(account);
@@ -31,9 +76,14 @@ exports.findAll = (req,res) => {
             message: err.message || "Some error occured while retrieving Accounts"
         });
     });
+  } else {
+    return res.status(403).send({success: false, msg: 'Unauthorized.'});
+  }
 };
 
 exports.getExpensesDates = (req,res) => {
+  var token = getToken(req.headers);
+  if (token) {
     Account.find({Email:req.params.userEmail}, {_id:0, "Expenses.Date":1})
     .then(Expenses => {
 
@@ -55,9 +105,14 @@ exports.getExpensesDates = (req,res) => {
             message: error.message || "Incomes not found."
         });
     });
+  } else {
+    return res.status(403).send({success: false, msg: 'Unauthorized.'});
+  }
 };
 
 exports.getIncomeDates = (req,res) => {
+  var token = getToken(req.headers);
+  if (token) {
     Account.find({Email:req.params.userEmail}, {_id:0, "Income.Date":1})
     .then(Incomes => {
 
@@ -79,6 +134,9 @@ exports.getIncomeDates = (req,res) => {
             message: error.message || "Incomes not found."
         });
     });
+  } else {
+    return res.status(403).send({success: false, msg: 'Unauthorized.'});
+  }
 };
 
 exports.getTotalsByDate = (req,res) => {
@@ -123,6 +181,8 @@ exports.getTotalsByDate = (req,res) => {
 };
 
 exports.getExpensesByDate = (req,res)=>{
+  var token = getToken(req.headers);
+  if (token) {
     Account.find({Email:req.params.userEmail},
         {_id:0, "Expenses":1})
     .then(data => {
@@ -147,9 +207,14 @@ exports.getExpensesByDate = (req,res)=>{
             message: err.message || "Cant find matching Expenses"
         })
     })
+  } else {
+    return res.status(403).send({success: false, msg: 'Unauthorized.'});
+  }
 };
 
 exports.getIncomesByDate = (req,res)=>{
+  var token = getToken(req.headers);
+  if (token) {
     Account.find({Email:req.params.userEmail},
         {_id:0, "Income":1})
     .then(data => {
@@ -173,6 +238,9 @@ exports.getIncomesByDate = (req,res)=>{
             message: err.message || "Cant find matching Income"
         })
     })
+  } else {
+    return res.status(403).send({success: false, msg: 'Unauthorized.'});
+  }
 };
 exports.getSingleMaxExpense = (req,res) => {
     Account.find({Email:req.params.userEmail},
@@ -232,6 +300,8 @@ exports.getSingleMaxIncome = (req,res) => {
 
 //PUT
 exports.addIncome = (req,res) => {
+  var token = getToken(req.headers);
+  if (token) {
     Account.findOne({Email:req.params.userEmail})
     .then(data => {
         data.Income.push(req.body);
@@ -243,11 +313,16 @@ exports.addIncome = (req,res) => {
             message: err.message || "Account not found"
         });
     });
+  } else {
+    return res.status(403).send({success: false, msg: 'Unauthorized.'});
+  }
 };
 
 
 
 exports.addExpens = (req,res) => {
+  var token = getToken(req.headers);
+  if (token) {
     Account.findOne({Email:req.params.userEmail})
     .then(data => {
         data.Expenses.push(req.body);
@@ -259,4 +334,7 @@ exports.addExpens = (req,res) => {
             message: err.message || "Account not found"
         });
     });
+  } else {
+    return res.status(403).send({success: false, msg: 'Unauthorized.'});
+  }
 };
