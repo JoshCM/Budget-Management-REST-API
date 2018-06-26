@@ -220,8 +220,6 @@ exports.getSingleMaxIncome = (req,res) => {
             }
 
         })
-
-
         res.send(Entry);
     }).catch(err => {
         res.status(404).send({
