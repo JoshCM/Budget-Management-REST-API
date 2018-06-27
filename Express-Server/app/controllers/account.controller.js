@@ -188,6 +188,7 @@ exports.getTotalsByDate = (req,res) => {
 
 exports.getExpensesByDate = (req,res)=>{
   var token = getToken(req.headers);
+  console.log("test exp: " + req.user.Email);
   if (token) {
     Account.find({Email:req.user.Email},
         {_id:1, "Expenses":1})
@@ -195,7 +196,7 @@ exports.getExpensesByDate = (req,res)=>{
         Expenses = data[0].Expenses;
         response = []
         queryStartDate = new Date(req.params.year,req.params.month,0)
-
+        console.log(Expenses + "\n " + queryStartDate );
         Expenses.map(entr=>{
             //console.log(entr)
             if(entr.Date != null
@@ -205,6 +206,7 @@ exports.getExpensesByDate = (req,res)=>{
             }
 
         })
+
 
 
         res.send(response);
