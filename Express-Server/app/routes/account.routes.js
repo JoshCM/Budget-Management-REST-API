@@ -12,33 +12,33 @@ module.exports = (app) => {
 
     app.get('/allAccounts', account.getall);
 
-    app.get('/totals/:userEmail/:month/:year', passport.authenticate('jwt', { session: false}) , account.getTotalsByDate )
+    app.get('/totals/:month/:year', passport.authenticate('jwt', { session: false}) , account.getTotalsByDate )
 
-    app.get('/expenseDates/:userEmail', passport.authenticate('jwt', { session: false}) , account.getExpensesDates);
+    app.get('/expenseDates', passport.authenticate('jwt', { session: false}) , account.getExpensesDates);
 
-    app.get('/singleMaxIncome/:userEmail/:month/:year', passport.authenticate('jwt', { session: false}) , account.getSingleMaxIncome);
+    app.get('/singleMaxIncome/:month/:year', passport.authenticate('jwt', { session: false}) , account.getSingleMaxIncome);
 
-    app.get('/singleMaxExpense/:userEmail/:month/:year', passport.authenticate('jwt', { session: false}) , account.getSingleMaxExpense);
+    app.get('/singleMaxExpense/:month/:year', passport.authenticate('jwt', { session: false}) , account.getSingleMaxExpense);
 
-    app.get('/expenses/:userEmail/:month/:year', passport.authenticate('jwt', { session: false}) , account.getExpensesByDate);
+    app.get('/expenses/:month/:year', passport.authenticate('jwt', { session: false}) , account.getExpensesByDate);
 
-    app.get('/expenseDates/:userEmail', passport.authenticate('jwt', { session: false}), account.getExpensesDates);
+    app.get('/expenseDates', passport.authenticate('jwt', { session: false}), account.getExpensesDates);
 
-    app.get('/incomeDates/:userEmail', passport.authenticate('jwt', { session: false}), account.getIncomeDates);
+    app.get('/incomeDates', passport.authenticate('jwt', { session: false}), account.getIncomeDates);
 
-    app.get('/expenses/:userEmail/:month/:year', passport.authenticate('jwt', { session: false}), account.getExpensesByDate);
+    app.get('/expenses/:month/:year', passport.authenticate('jwt', { session: false}), account.getExpensesByDate);
 
-    app.get('/incomes/:userEmail/:month/:year', passport.authenticate('jwt', { session: false}), account.getIncomesByDate);
+    app.get('/incomes/:month/:year', passport.authenticate('jwt', { session: false}), account.getIncomesByDate);
 
     //PUT
-    app.put('/incomes/:userEmail', passport.authenticate('jwt', { session: false}) , account.addIncome);
+    app.put('/incomes', passport.authenticate('jwt', { session: false}) , account.addIncome);
 
-    app.put('/expenses/:userEmail', passport.authenticate('jwt', { session: false}), account.addExpens);
+    app.put('/expenses', passport.authenticate('jwt', { session: false}), account.addExpens);
 
     //DELETE
-    app.delete('/expenses/:userEmail/:expenseId',passport.authenticate('jwt', { session: false}),account.removeExpense);
+    app.delete('/expenses/:expenseId',passport.authenticate('jwt', { session: false}),account.removeExpense);
 
-    app.delete('/incomes/:userEmail/:incomeId',passport.authenticate('jwt', { session: false}),account.removeIncome);
+    app.delete('/incomes/:incomeId',passport.authenticate('jwt', { session: false}),account.removeIncome);
 
-    app.delete('/accounts/:userEmail',passport.authenticate('jwt', { session: false}),account.deleteAccount);
+    app.delete('/accounts/close' ,passport.authenticate('jwt', { session: false}),account.deleteAccount);
 }

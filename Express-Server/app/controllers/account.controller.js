@@ -85,7 +85,7 @@ exports.findAll = (req,res) => {
 exports.getExpensesDates = (req,res) => {
   var token = getToken(req.headers);
   if (token) {
-    Account.find({Email:req.params.userEmail}, {_id:0, "Expenses.Date":1})
+    Account.find({Email:req.user.Email}, {_id:0, "Expenses.Date":1})
     .then(Expenses => {
 
         Dates = {}
@@ -114,7 +114,7 @@ exports.getExpensesDates = (req,res) => {
 exports.getIncomeDates = (req,res) => {
   var token = getToken(req.headers);
   if (token) {
-    Account.find({Email:req.params.userEmail}, {_id:0, "Income.Date":1})
+    Account.find({Email:req.user.Email}, {_id:0, "Income.Date":1})
     .then(Incomes => {
 
         Dates = {}
@@ -143,7 +143,7 @@ exports.getIncomeDates = (req,res) => {
 exports.getTotalsByDate = (req,res) => {
   var token = getToken(req.headers);
   if (token) {
-    Account.find({Email:req.params.userEmail},
+    Account.find({Email:req.user.Email},
       {_id:0, "Expenses":1, "Income": 1})
       .then(data => {
       Expenses = data[0].Expenses;
@@ -189,7 +189,7 @@ exports.getTotalsByDate = (req,res) => {
 exports.getExpensesByDate = (req,res)=>{
   var token = getToken(req.headers);
   if (token) {
-    Account.find({Email:req.params.userEmail},
+    Account.find({Email:req.user.Email},
         {_id:1, "Expenses":1})
     .then(data => {
         Expenses = data[0].Expenses;
@@ -197,7 +197,7 @@ exports.getExpensesByDate = (req,res)=>{
         queryStartDate = new Date(req.params.year,req.params.month,0)
 
         Expenses.map(entr=>{
-            console.log(entr)
+            //console.log(entr)
             if(entr.Date != null
                 && queryStartDate.getFullYear() == entr.Date.getFullYear()
                 && queryStartDate.getMonth() == entr.Date.getMonth()){
@@ -221,7 +221,7 @@ exports.getExpensesByDate = (req,res)=>{
 exports.getIncomesByDate = (req,res)=>{
   var token = getToken(req.headers);
   if (token) {
-    Account.find({Email:req.params.userEmail},
+    Account.find({Email:req.user.Email},
         {_id:1, "Income":1})
     .then(data => {
         Income = data[0].Income;
@@ -251,7 +251,7 @@ exports.getIncomesByDate = (req,res)=>{
 exports.getSingleMaxExpense = (req,res) => {
   var token = getToken(req.headers);
   if (token) {
-    Account.find({Email:req.params.userEmail},
+    Account.find({Email:req.user.Email},
         {_id:0, "Expenses":1})
     .then(data => {
         Expense = data[0].Expenses;
@@ -284,7 +284,7 @@ exports.getSingleMaxExpense = (req,res) => {
 exports.getSingleMaxIncome = (req,res) => {
   var token = getToken(req.headers);
   if (token) {
-    Account.find({Email:req.params.userEmail},
+    Account.find({Email:req.user.Email},
         {_id:0, "Income":1})
     .then(data => {
         Income = data[0].Income;
@@ -318,7 +318,7 @@ exports.getSingleMaxIncome = (req,res) => {
 exports.addIncome = (req,res) => {
   var token = getToken(req.headers);
   if (token) {
-    Account.findOne({Email:req.params.userEmail})
+    Account.findOne({Email:req.user.Email})
     .then(data => {
         data.Income.push(req.body);
         data.save();
@@ -341,7 +341,7 @@ exports.addIncome = (req,res) => {
 exports.addExpens = (req,res) => {
   var token = getToken(req.headers);
   if (token) {
-    Account.findOne({Email:req.params.userEmail})
+    Account.findOne({Email:req.user.Email})
     .then(data => {
         data.Expenses.push(req.body);
         data.save()
@@ -362,7 +362,7 @@ exports.removeExpense = (req,res) => {
   var token = getToken(req.headers);
   if (token) {
 
-    Account.update({Email:req.params.userEmail},{$pull:{Expenses:{_id:req.params.expenseId}}})
+    Account.update({Email:req.user.Email},{$pull:{Expenses:{_id:req.params.expenseId}}})
     .then(data => {
         res.send({
           message: "Deleted successfully"
@@ -383,7 +383,7 @@ exports.removeExpense = (req,res) => {
 exports.removeIncome = (req,res) => {
   var token = getToken(req.headers);
   if (token) {
-    Account.update({Email:req.params.userEmail},{$pull:{Income:{_id:req.params.incomeId}}})
+    Account.update({Email:req.user.Email},{$pull:{Income:{_id:req.params.incomeId}}})
     .then(data => {
         res.send({
           message: "Deleted successfully"
@@ -402,9 +402,9 @@ exports.removeIncome = (req,res) => {
 }
 
 exports.deleteAccount = (req,res) => {
-//  var token = getToken(req.headers);
-//  if (token) {
-    Account.findOneAndRemove({Email:req.params.userEmail})
+  var token = getToken(req.headers);
+  if (token) {
+    Account.findOneAndRemove({Email:req.user.Email})
     .then(data => {
         res.send({
           message: "Deleted successfully"
@@ -415,9 +415,9 @@ exports.deleteAccount = (req,res) => {
             message: err.message || "Account not found"
         });
     });
-//  } else {
-//    return res.status(403).send({success: false, msg: 'Unauthorized.'});
-//  }
+  } else {
+    return res.status(403).send({success: false, msg: 'Unauthorized.'});
+  }
 
 }
 
