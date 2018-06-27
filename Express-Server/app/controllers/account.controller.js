@@ -130,7 +130,7 @@ exports.getIncomeDates = (req,res) => {
         res.send(Dates);
 
     }).catch(error => {
-        res.status(404).send({
+        res.status(401).send({
             message: error.message || "Incomes not found."
         });
     });
@@ -176,7 +176,7 @@ exports.getTotalsByDate = (req,res) => {
 
       res.send(response);
     }).catch(err => {
-      res.status(404).send({
+      res.status(401).send({
           message: err.message || "Cant find matching Expenses"
       })
     })
