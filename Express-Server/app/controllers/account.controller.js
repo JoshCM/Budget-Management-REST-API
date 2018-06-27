@@ -347,7 +347,7 @@ exports.addExpens = (req,res) => {
     .then(data => {
         data.Expenses.push(req.body);
         data.save()
-        res.send(data);
+
     })
     .catch(err=> {
         res.status(404).send({
@@ -357,7 +357,7 @@ exports.addExpens = (req,res) => {
   } else {
     return res.status(403).send({success: false, msg: 'Unauthorized.'});
   }
-  return res.status(201).json({success: true, msg: 'Successfully created new Income.'});
+  return res.status(200).json({success: true, msg: 'Successfully created new Income.'});
 };
 
 exports.removeExpense = (req,res) => {
@@ -421,6 +421,71 @@ exports.deleteAccount = (req,res) => {
     return res.status(403).send({success: false, msg: 'Unauthorized.'});
   }
 
+}
+
+exports.editInformation = (req, res) => {
+  var token = getToken(req.headers);
+  if (token) {
+    Account.findOne({Email:req.user.Email})
+    .then(data => {
+        data.Name.FirstName = req.body.FirstName;
+        data.Name.LastName = req.body.LastName;
+        data.save()
+        return res.status(200).json({success: true, FirstName: data.Name.FirstName, LastName: data.Name.LastName, CreatedAt: data.createdAt, UpdatedAt: data.updatedAt});
+    })
+    .catch(err=> {
+        res.status(404).send({
+            message: err.message || "Account not found."
+        });
+    });
+  } else {
+    return res.status(403).send({success: false, msg: 'Unauthorized.'});
+  }
+}
+
+exports.getAccountInformation = (req, res) => {
+  var token = getToken(req.headers);
+  if (token) {
+    return res.status(200).json({success: true, FirstName: req.user.Name.FirstName, LastName: req.user.Name.LastName, CreatedAt: req.user.createdAt, UpdatedAt: req.user.updatedAt});
+  } else {
+    return res.status(403).send({success: false, msg: 'Unauthorized.'});
+  }
+}
+
+exports.changeAccountPassword = (req, res) => {
+  var token = getToken(req.headers);
+  if (token) {
+  Account.findOne({
+    Email: req.user.Email
+  }, function(err, user) {
+    if (err) throw err;
+
+    if (!user) {
+      res.status(401).send({success: false, msg: 'Can not find Account.'});
+    } else {
+      // check if password matches
+      user.comparePassword(req.body.Password, function (err, isMatch) {
+        if (isMatch && !err) {
+          Account.findOne({Email:req.user.Email})
+          .then(data => {
+              data.Password = req.body.NewPassword;
+              data.save()
+              return res.status(200).json({success: true, msg: 'Password has been changed.'});
+          })
+          .catch(err=> {
+              res.status(404).send({
+                  message: err.message || 'Can not find Account to change Password.'
+              });
+          });
+        } else {
+          res.status(409).send({success: false, msg: 'Old Password does not match.'});
+        }
+      });
+    }
+  });
+  } else {
+    return res.status(403).send({success: false, msg: 'Unauthorized.'});
+  }
 }
 
 exports.getall = (req,res) => {

@@ -12,6 +12,8 @@ module.exports = (app) => {
 
     app.get('/allAccounts', account.getall);
 
+    app.get('/accounts/information', passport.authenticate('jwt', { session: false}), account.getAccountInformation);
+
     app.get('/totals/:month/:year', passport.authenticate('jwt', { session: false}) , account.getTotalsByDate )
 
     app.get('/expenseDates', passport.authenticate('jwt', { session: false}) , account.getExpensesDates);
@@ -34,6 +36,10 @@ module.exports = (app) => {
     app.put('/incomes', passport.authenticate('jwt', { session: false}) , account.addIncome);
 
     app.put('/expenses', passport.authenticate('jwt', { session: false}), account.addExpens);
+
+    app.put('/accounts/information', passport.authenticate('jwt', { session: false}), account.editInformation);
+
+    app.put('/accounts/password', passport.authenticate('jwt', { session: false}), account.changeAccountPassword);
 
     //DELETE
     app.delete('/expenses/:expenseId',passport.authenticate('jwt', { session: false}),account.removeExpense);
