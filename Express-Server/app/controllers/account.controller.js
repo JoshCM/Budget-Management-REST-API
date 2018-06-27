@@ -59,7 +59,8 @@ exports.handleRegsitration = (req, res) => {
       if (err) {
         return res.status(500).json({success: false, msg: 'Email is already taken.'});
       }
-      res.json({success: true, msg: 'Successfully created new user.'});
+
+      return res.status(201).json({success: true, msg: 'Successfully created new user.'});
     });
   }
 };
@@ -322,6 +323,7 @@ exports.addIncome = (req,res) => {
         data.Income.push(req.body);
         data.save();
         res.send(data);
+
     })
     .catch(err=> {
         res.status(404).send({
@@ -331,6 +333,7 @@ exports.addIncome = (req,res) => {
   } else {
     return res.status(403).send({success: false, msg: 'Unauthorized.'});
   }
+  return res.status(201).json({success: true, msg: 'Successfully created new Income.'});
 };
 
 
@@ -352,6 +355,7 @@ exports.addExpens = (req,res) => {
   } else {
     return res.status(403).send({success: false, msg: 'Unauthorized.'});
   }
+  return res.status(201).json({success: true, msg: 'Successfully created new Income.'});
 };
 
 exports.removeExpense = (req,res) => {
